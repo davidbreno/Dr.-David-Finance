@@ -41,9 +41,9 @@ const ProtectedRoute = () => {
   }
 
   return (
-    <AppShell>
+    <ErrorBoundary><AppShell>
       <Outlet />
-    </AppShell>
+    </AppShell></ErrorBoundary>
   );
 };
 
