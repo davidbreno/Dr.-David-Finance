@@ -1,6 +1,6 @@
 // Debug helper (import available if needed for isolation)
 // import { LabeledErrorBoundary } from "../../components/common/ErrorBoundary";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -251,9 +251,14 @@ const PerformanceTooltip = ({ active, payload }: TooltipContentProps<number, str
 };
 
 export const DashboardPage = () => {
+  const [mounted, setMounted] = useState(false);
   const { data: entries = [] } = useTransactions("entrada");
   const { data: exits = [] } = useTransactions("saida");
   const { data: accounts = [] } = useAccounts();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const monthly = useMemo(
     () =>
@@ -344,6 +349,7 @@ export const DashboardPage = () => {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.4fr,1fr]">
+        {mounted && (
         <div className="glass-card flex flex-col gap-6 p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -470,7 +476,9 @@ export const DashboardPage = () => {
             </ResponsiveContainer>
           </div>
         </div>
+        )}
 
+        {mounted && (
         <div className="glass-card flex flex-col gap-6 p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -535,6 +543,7 @@ export const DashboardPage = () => {
             </ResponsiveContainer>
           </div>
         </div>
+        )}
       </section>
     </div>
   );
