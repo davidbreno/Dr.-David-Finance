@@ -32,6 +32,23 @@ const tooltipDateFormat = new Intl.DateTimeFormat("pt-BR", {
   year: "numeric",
 });
 
+// Pie helpers
+const RADIAN = Math.PI / 180;
+const renderPercentageLabel = (props: any) => {
+  const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props ?? {};
+  if (!percent) return null;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.78;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const pct = Math.round(percent * 100);
+  if (pct <= 0) return null;
+  return (
+    <text x={x} y={y} fill="#fff" fontSize={12} fontWeight={700} textAnchor="middle" dominantBaseline="central">
+      {pct}%
+    </text>
+  );
+};
+
 const buildLastMonths = (months: number): Date[] => {
   const list: Date[] = [];
   const base = new Date();
@@ -617,8 +634,19 @@ export const DashboardPage = () => {
               )}
               </div>
             </div>
-          <div className="relative h-80 w-full overflow-hidden rounded-[28px] bg-[var(--color-surface-muted)]/20">
-            <ResponsiveContainer>
+            <div className="relative h-80 w-full overflow-hidden rounded-[28px] bg-[var(--color-surface-muted)]/20">
+              {/* center label */}
+              <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+                <div className="rounded-full bg-[var(--color-surface)]/90 px-6 py-4 text-center shadow-card">
+                  <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                    {categoryView === "entradas" ? "Entradas" : "Saidas"}
+                  </div>
+                  <div className="text-lg font-bold text-[var(--color-text-primary)]">
+                    {formatCurrency(categoryPieData.reduce((s, d) => s + (d.value ?? 0), 0))}
+                  </div>
+                </div>
+              </div>
+              <ResponsiveContainer>
               <PieChart>
                 <Tooltip formatter={(value: number) => formatCurrency(value)} />
                 <Pie
@@ -629,14 +657,32 @@ export const DashboardPage = () => {
                   outerRadius={95}
                   paddingAngle={4}
                   isAnimationActive={false}
+                  label={renderPercentageLabel}
+                  labelLine={false}
                 >
                   {categoryPieData.map((_, idx) => (
                     <Cell key={`cell-${idx}`} fill={pieColors[idx % pieColors.length]} />
                   ))}
                 </Pie>
               </PieChart>
-            </ResponsiveContainer>
-          </div>
+              </ResponsiveContainer>
+              {/* legend */}
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {categoryPieData.map((d, idx) => (
+                  <div key={`legend-${idx}`} className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+                    <span className="h-3 w-3 rounded" style={{ backgroundColor: pieColors[idx % pieColors.length] }} />
+                    <span className="truncate">{d.name}</span>
+                    <span className="ml-auto font-semibold text-[var(--color-text-primary)]">
+                      {(() => {
+                        const total = categoryPieData.reduce((s, i) => s + (i.value ?? 0), 0);
+                        const pct = total ? Math.round(((d.value ?? 0) / total) * 100) : 0;
+                        return `${pct}%`;
+                      })()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
         </div>
         )}
       </section>
@@ -656,10 +702,17 @@ export const DashboardPage = () => {
                   <button type="button" className={`px-3 py-1 font-semibold ${categoryView === "saidas" ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"}`} onClick={() => setCategoryView("saidas")}>Saidas</button>
                 </div>
               </div>
+              {/* center label */}
+              <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+                <div className="rounded-full bg-[var(--color-surface)]/90 px-6 py-3 text-center shadow-card">
+                  <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">{categoryView === "entradas" ? "Entradas" : "Saidas"}</div>
+                  <div className="text-base font-bold text-[var(--color-text-primary)]">{formatCurrency(categoryPieData.reduce((s, d) => s + (d.value ?? 0), 0))}</div>
+                </div>
+              </div>
               <ResponsiveContainer>
                 <PieChart>
                   <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                  <Pie data={categoryPieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={90} paddingAngle={4} isAnimationActive={false}>
+                  <Pie data={categoryPieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={90} paddingAngle={4} isAnimationActive={false} label={renderPercentageLabel} labelLine={false}>
                     {categoryPieData.map((_, idx) => (
                       <Cell key={`cell-m-${idx}`} fill={pieColors[idx % pieColors.length]} />
                     ))}
