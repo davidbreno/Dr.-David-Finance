@@ -338,10 +338,6 @@ export const DashboardPage = () => {
   };
 
   // helpers para total por tipo
-  const totalCategory = useMemo(
-    () => categoryPieData.reduce((sum, d) => sum + (d.value ?? 0), 0),
-    [categoryPieData],
-  );
 
   const totalEntradas = useMemo(() => entries.reduce((sum, item) => sum + (item.amount ?? 0), 0), [entries]);
   const totalSaidas = useMemo(() => exits.reduce((sum, item) => sum + (item.amount ?? 0), 0), [exits]);
