@@ -61,7 +61,7 @@ export const Topbar = () => {
   };
 
   return (
-    <header className="flex flex-col gap-4">
+    <header className="sticky top-0 z-40 flex flex-col gap-4 border-b border-[rgba(255,255,255,0.06)] bg-[color:var(--color-bg)]/60 px-1 py-2 topbar-blur">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
         <div className="flex flex-1 items-center gap-3">
           <button
