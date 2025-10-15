@@ -277,6 +277,7 @@ export const DashboardPage = () => {
   const { data: accounts = [] } = useAccounts();
   const createEntrada = useCreateTransaction("entrada");
   const createSaida = useCreateTransaction("saida");
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const [categoryView, setCategoryView] = useState<"entradas" | "saidas">("saidas");
 
@@ -351,6 +352,14 @@ export const DashboardPage = () => {
       console.error("Demo seed failed", e);
     }
   };
+
+  const totalCategory = useMemo(
+    () => categoryPieData.reduce((sum, d) => sum + (d.value ?? 0), 0),
+    [categoryPieData],
+  );
+
+  const onSliceEnter = (_: any, index: number) => setActiveIndex(index);
+  const onSliceLeave = () => setActiveIndex(null);
 
   const totalEntradas = useMemo(() => entries.reduce((sum, item) => sum + (item.amount ?? 0), 0), [entries]);
   const totalSaidas = useMemo(() => exits.reduce((sum, item) => sum + (item.amount ?? 0), 0), [exits]);
@@ -647,41 +656,32 @@ export const DashboardPage = () => {
                 </div>
               </div>
               <ResponsiveContainer>
-              <PieChart>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                <Pie
-                  data={categoryPieData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={55}
-                  outerRadius={95}
-                  paddingAngle={4}
-                  isAnimationActive={false}
-                  label={renderPercentageLabel}
-                  labelLine={false}
-                >
-                  {categoryPieData.map((_, idx) => (
-                    <Cell key={`cell-${idx}`} fill={pieColors[idx % pieColors.length]} />
-                  ))}
-                </Pie>
-              </PieChart>
+                <PieChart>
+                  <defs>
+                    {categoryPieData.map((_, idx) => (
+                      <linearGradient key={`g-${idx}`} id={`pieGrad${idx}`} x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor={pieColors[idx % pieColors.length]} stopOpacity={0.9} />
+                        <stop offset="100%" stopColor={pieColors[(idx + 1) % pieColors.length]} stopOpacity={0.9} />
+                      </linearGradient>
+                    ))}
+                  </defs>
+                  <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                  <Pie
+                    data={categoryPieData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={62}
+                    outerRadius={108}
+                    paddingAngle={6}
+                    cornerRadius={12}
+                    isAnimationActive={false}
+                  >
+                    {categoryPieData.map((_, idx) => (
+                      <Cell key={`cell-${idx}`} fill={`url(#pieGrad${idx})`} stroke="var(--color-bg)" strokeWidth={6} />
+                    ))}
+                  </Pie>
+                </PieChart>
               </ResponsiveContainer>
-              {/* legend */}
-              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {categoryPieData.map((d, idx) => (
-                  <div key={`legend-${idx}`} className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
-                    <span className="h-3 w-3 rounded" style={{ backgroundColor: pieColors[idx % pieColors.length] }} />
-                    <span className="truncate">{d.name}</span>
-                    <span className="ml-auto font-semibold text-[var(--color-text-primary)]">
-                      {(() => {
-                        const total = categoryPieData.reduce((s, i) => s + (i.value ?? 0), 0);
-                        const pct = total ? Math.round(((d.value ?? 0) / total) * 100) : 0;
-                        return `${pct}%`;
-                      })()}
-                    </span>
-                  </div>
-                ))}
-              </div>
             </div>
         </div>
         )}
@@ -711,10 +711,27 @@ export const DashboardPage = () => {
               </div>
               <ResponsiveContainer>
                 <PieChart>
-                  <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                  <Pie data={categoryPieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={90} paddingAngle={4} isAnimationActive={false} label={renderPercentageLabel} labelLine={false}>
+                  <defs>
                     {categoryPieData.map((_, idx) => (
-                      <Cell key={`cell-m-${idx}`} fill={pieColors[idx % pieColors.length]} />
+                      <linearGradient key={`gm-${idx}`} id={`pieGradM${idx}`} x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor={pieColors[idx % pieColors.length]} stopOpacity={0.9} />
+                        <stop offset="100%" stopColor={pieColors[(idx + 1) % pieColors.length]} stopOpacity={0.9} />
+                      </linearGradient>
+                    ))}
+                  </defs>
+                  <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                  <Pie
+                    data={categoryPieData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={58}
+                    outerRadius={100}
+                    paddingAngle={6}
+                    cornerRadius={12}
+                    isAnimationActive={false}
+                  >
+                    {categoryPieData.map((_, idx) => (
+                      <Cell key={`cell-m-${idx}`} fill={`url(#pieGradM${idx})`} stroke="var(--color-bg)" strokeWidth={6} />
                     ))}
                   </Pie>
                 </PieChart>
