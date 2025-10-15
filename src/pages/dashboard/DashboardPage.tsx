@@ -32,22 +32,7 @@ const tooltipDateFormat = new Intl.DateTimeFormat("pt-BR", {
   year: "numeric",
 });
 
-// Pie helpers
-const RADIAN = Math.PI / 180;
-const renderPercentageLabel = (props: any) => {
-  const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props ?? {};
-  if (!percent) return null;
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.78;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  const pct = Math.round(percent * 100);
-  if (pct <= 0) return null;
-  return (
-    <text x={x} y={y} fill="#fff" fontSize={12} fontWeight={700} textAnchor="middle" dominantBaseline="central">
-      {pct}%
-    </text>
-  );
-};
+// Pie helpers (cores para a pizza)
 
 const buildLastMonths = (months: number): Date[] => {
   const list: Date[] = [];
@@ -277,7 +262,6 @@ export const DashboardPage = () => {
   const { data: accounts = [] } = useAccounts();
   const createEntrada = useCreateTransaction("entrada");
   const createSaida = useCreateTransaction("saida");
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const [categoryView, setCategoryView] = useState<"entradas" | "saidas">("saidas");
 
@@ -353,13 +337,11 @@ export const DashboardPage = () => {
     }
   };
 
+  // helpers para total por tipo
   const totalCategory = useMemo(
     () => categoryPieData.reduce((sum, d) => sum + (d.value ?? 0), 0),
     [categoryPieData],
   );
-
-  const onSliceEnter = (_: any, index: number) => setActiveIndex(index);
-  const onSliceLeave = () => setActiveIndex(null);
 
   const totalEntradas = useMemo(() => entries.reduce((sum, item) => sum + (item.amount ?? 0), 0), [entries]);
   const totalSaidas = useMemo(() => exits.reduce((sum, item) => sum + (item.amount ?? 0), 0), [exits]);
@@ -745,5 +727,6 @@ export const DashboardPage = () => {
 };
 
 export default DashboardPage;
+
 
 
