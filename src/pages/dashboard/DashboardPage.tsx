@@ -1,3 +1,4 @@
+import { LabeledErrorBoundary } from  \\\ ../../components/common/ErrorBoundary\\\;
 import { useMemo } from "react";
 import {
   Area,
