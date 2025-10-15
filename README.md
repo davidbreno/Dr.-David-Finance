@@ -2,7 +2,7 @@
 
 Aplicacao web completa para controle financeiro pessoal/empresarial, desenvolvida com React, TypeScript e Vite. O layout segue a referencia da dashboard fornecida, com menu lateral configuravel, graficos interativos, formularios de lancamentos, calendario integrado e exportacao de relatorios em PDF.
 
-## Principais recursos
+## Principais recursos.
 
 - **Autenticacao** com Supabase (login, registro e persistencia de sessao).
 - **Temas** personalizaveis (Aurora, Dark, Nude, Sunset, Ocean, Neon-Cyan, Obsidian, Midnight e Studio) com opcoes de ocultar itens do menu e definir o comportamento da sidebar.
