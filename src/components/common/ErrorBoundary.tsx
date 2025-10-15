@@ -33,3 +33,21 @@ export class ErrorBoundary extends React.Component<React.PropsWithChildren, Erro
     return this.props.children as React.ReactElement;
   }
 }
+
+export class LabeledErrorBoundary extends React.Component<{ label: string } & React.PropsWithChildren, ErrorBoundaryState> {
+  constructor(props: { label: string } & React.PropsWithChildren) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError(error: unknown): ErrorBoundaryState { return { hasError: true, error }; }
+  override componentDidCatch(error: unknown, info: unknown) {
+    // eslint-disable-next-line no-console
+    console.error("UI LabeledErrorBoundary [" + this.props.label + "] caught:", error, info);
+  }
+  override render() {
+    if (this.state.hasError) {
+      return null; // deixa o resto da pagina aparecer
+    }
+    return this.props.children as React.ReactElement;
+  }
+}
