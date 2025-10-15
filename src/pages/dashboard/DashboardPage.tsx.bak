@@ -75,7 +75,6 @@ const SummaryCard = ({
 
 export const DashboardPage = () => {
   const { user } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const firstName = useMemo(
     () => (user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "Usuário",
     [user],
@@ -89,29 +88,13 @@ export const DashboardPage = () => {
     setMounted(true);
   }, []);
 
-  const filteredEntries = useMemo(
-    () =>
-      selectedCategory
-        ? entries.filter((e) => (e.category ?? "Outros").toUpperCase() === selectedCategory)
-        : entries,
-    [entries, selectedCategory],
-  );
-
-  const filteredExits = useMemo(
-    () =>
-      selectedCategory
-        ? exits.filter((e) => (e.category ?? "Outros").toUpperCase() === selectedCategory)
-        : exits,
-    [exits, selectedCategory],
-  );
-
   const monthly = useMemo(
     () =>
       aggregateByMonth(
-        filteredEntries.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
-        filteredExits.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
+        entries.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
+        exits.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
       ),
-    [filteredEntries, filteredExits],
+    [entries, exits],
   );
 
   const categories = useMemo(
@@ -140,13 +123,13 @@ export const DashboardPage = () => {
   );
 
   const totalEntradas = useMemo(
-    () => filteredEntries.reduce((sum, item) => sum + (item.amount ?? 0), 0),
-    [filteredEntries],
+    () => entries.reduce((sum, item) => sum + (item.amount ?? 0), 0),
+    [entries],
   );
 
   const totalSaidas = useMemo(
-    () => filteredExits.reduce((sum, item) => sum + (item.amount ?? 0), 0),
-    [filteredExits],
+    () => exits.reduce((sum, item) => sum + (item.amount ?? 0), 0),
+    [exits],
   );
 
   const saldoAtual = totalEntradas - totalSaidas;
@@ -259,14 +242,6 @@ export const DashboardPage = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          {selectedCategory && (
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2 text-xs text-[var(--color-text-muted)]">
-              Filtrando por categoria: <strong className="text-[var(--color-text-primary)]">{selectedCategory}</strong>
-              <button className="ml-3 btn-ghost rounded-xl px-3 py-1 text-xs" onClick={() => setSelectedCategory(null)}>
-                Limpar
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-col gap-6">
@@ -292,18 +267,8 @@ export const DashboardPage = () => {
                       startAngle={90}
                       endAngle={-270}
                     >
-                      {entradasPorCategoria.map((slice, idx) => (
-                        <Cell
-                          key={`entrada-${idx}`}
-                          fill={donutColors[idx % donutColors.length]}
-                          stroke="var(--color-bg)"
-                          strokeWidth={5}
-                          onClick={() =>
-                            setSelectedCategory((prev) =>
-                              prev === slice.name.toUpperCase() ? null : slice.name.toUpperCase(),
-                            )
-                          }
-                        />
+                      {entradasPorCategoria.map((_, idx) => (
+                        <Cell key={`entrada-${idx}`} fill={donutColors[idx % donutColors.length]} stroke="var(--color-bg)" strokeWidth={5} />
                       ))}
                     </Pie>
                   </PieChart>
@@ -336,18 +301,8 @@ export const DashboardPage = () => {
                       startAngle={90}
                       endAngle={-270}
                     >
-                      {saidasPorCategoria.map((slice, idx) => (
-                        <Cell
-                          key={`saida-${idx}`}
-                          fill={donutColors[idx % donutColors.length]}
-                          stroke="var(--color-bg)"
-                          strokeWidth={5}
-                          onClick={() =>
-                            setSelectedCategory((prev) =>
-                              prev === slice.name.toUpperCase() ? null : slice.name.toUpperCase(),
-                            )
-                          }
-                        />
+                      {saidasPorCategoria.map((_, idx) => (
+                        <Cell key={`saida-${idx}`} fill={donutColors[idx % donutColors.length]} stroke="var(--color-bg)" strokeWidth={5} />
                       ))}
                     </Pie>
                   </PieChart>
@@ -396,7 +351,7 @@ export const DashboardPage = () => {
                       <td>
                         <span
                           className="status-badge"
-                          data-variant={account.status === "pago" ? "paid" : account.status === "em_atraso" ? "late" : "pending"}
+                          data-variant={account.status === "pago" ? "paid" : account.status === "atrasado" ? "late" : "pending"}
                         >
                           {account.status}
                         </span>

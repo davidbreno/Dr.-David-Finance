@@ -1,12 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type ThemeOption =
-  | "dark"
-  | "nude"
-  | "neon-cyan"
-  | "midnight"
-  | "studio";
+export type ThemeOption = "neon" | "obsidian";
 export type SidebarVariant = "pinned" | "hover";
 
 export type MenuSection =
@@ -41,8 +36,8 @@ const ALL_SECTIONS: MenuSection[] = [
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
-      theme: "dark",
-      sidebarVariant: "pinned",
+      theme: "neon",
+      sidebarVariant: "hover",
       hiddenMenuSections: [],
       setTheme: (theme) => set({ theme }),
       setSidebarVariant: (sidebarVariant) => set({ sidebarVariant }),

@@ -8,49 +8,14 @@ import type { MenuSection, SidebarVariant, ThemeOption } from "../../store/ui";
 
 const themes: { key: ThemeOption; name: string; description: string }[] = [
   {
-    key: "aurora",
-    name: "Aurora",
-    description: "Tema inspirado na dashboard original, com gradientes violeta e ciano.",
-  },
-  {
-    key: "dark",
-    name: "Dark Modern",
-    description: "Visual escuro com contrastes neon para sessoes de baixa iluminacao.",
-  },
-  {
-    key: "nude",
-    name: "Nude Clean",
-    description: "Paleta suave com tons terrosos e minimalistas.",
-  },
-  {
-    key: "sunset",
-    name: "Sunset Glow",
-    description: "Combina tons quentes de por do sol para uma interface energica.",
-  },
-  {
-    key: "ocean",
-    name: "Ocean Breeze",
-    description: "Palette azul turquesa inspirada em mares e clarao tropical.",
-  },
-  {
-    key: "neon-cyan",
-    name: "Neon Cyan",
-    description: "Tema dark com destaque em ciano neon e contrastes frios.",
+    key: "neon",
+    name: "Neon",
+    description: "Tema escuro com brilho neon e gradientes luminosos.",
   },
   {
     key: "obsidian",
     name: "Obsidian Gold",
     description: "Dark elegante com detalhes dourados e contrastes sofisticados.",
-  },
-  {
-    key: "midnight",
-    name: "Midnight Halo",
-    description: "Dark moderno com gradiente azul-violeta inspirado na noite urbana.",
-  },
-  {
-    key: "studio",
-    name: "Studio Dark",
-    description: "Visual inspirado em IDEs modernas, com base azul profunda e destaques dourados.",
   },
 ];
 
