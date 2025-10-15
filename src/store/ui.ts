@@ -82,3 +82,4 @@ export const isSectionVisible = (section: MenuSection, hidden: MenuSection[]) =>
 
 export const getVisibleSections = (hidden: MenuSection[]) =>
   ALL_SECTIONS.filter((section) => isSectionVisible(section, hidden));
+
