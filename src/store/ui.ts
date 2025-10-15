@@ -2,13 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type ThemeOption =
-  | "aurora"
   | "dark"
   | "nude"
-  | "sunset"
-  | "ocean"
   | "neon-cyan"
-  | "obsidian"
   | "midnight"
   | "studio";
 export type SidebarVariant = "pinned" | "hover";
@@ -45,7 +41,7 @@ const ALL_SECTIONS: MenuSection[] = [
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
-      theme: "aurora",
+      theme: "dark",
       sidebarVariant: "pinned",
       hiddenMenuSections: [],
       setTheme: (theme) => set({ theme }),
@@ -82,4 +78,3 @@ export const isSectionVisible = (section: MenuSection, hidden: MenuSection[]) =>
 
 export const getVisibleSections = (hidden: MenuSection[]) =>
   ALL_SECTIONS.filter((section) => isSectionVisible(section, hidden));
-
