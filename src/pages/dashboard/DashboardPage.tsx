@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import type { TooltipContentProps } from "recharts";
 
-import { useTransactions } from "../../hooks/useTransactions";
+import { useCreateTransaction, useTransactions } from "../../hooks/useTransactions";
 import { useAccounts } from "../../hooks/useAccounts";
 import { formatCurrency } from "../../utils/format";
 
@@ -258,6 +258,8 @@ export const DashboardPage = () => {
   const { data: entries = [] } = useTransactions("entrada");
   const { data: exits = [] } = useTransactions("saida");
   const { data: accounts = [] } = useAccounts();
+  const createEntrada = useCreateTransaction("entrada");
+  const createSaida = useCreateTransaction("saida");
 
   const [categoryView, setCategoryView] = useState<"entradas" | "saidas">("saidas");
 
@@ -306,6 +308,32 @@ export const DashboardPage = () => {
     "#3af3ff",
     "#78ffb2",
   ];
+
+  const hasCategoryData = useMemo(
+    () => categories.some((c) => (c.entradas ?? 0) + (c.saidas ?? 0) > 0),
+    [categories],
+  );
+
+  const handleAddDemo = async () => {
+    const today = new Date();
+    const iso = (d: Date) => d.toISOString().slice(0, 10);
+    const d1 = new Date(today);
+    const d2 = new Date(today); d2.setDate(today.getDate() - 3);
+    const d3 = new Date(today); d3.setDate(today.getDate() - 8);
+
+    try {
+      await createEntrada.mutateAsync({ amount: "250,00", description: "Pagamento cliente", category: "Servicos", date: iso(d3) });
+      await createEntrada.mutateAsync({ amount: "120,00", description: "Venda Pix", category: "Produtos", date: iso(d2) });
+      await createEntrada.mutateAsync({ amount: "80,00", description: "Afiliados", category: "Outros", date: iso(d1) });
+
+      await createSaida.mutateAsync({ amount: "60,00", description: "Almoco", category: "Alimentacao", date: iso(d2) });
+      await createSaida.mutateAsync({ amount: "45,00", description: "Transporte", category: "Transporte", date: iso(d1) });
+      await createSaida.mutateAsync({ amount: "150,00", description: "Assinaturas", category: "Servicos", date: iso(d3) });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("Demo seed failed", e);
+    }
+  };
 
   const totalEntradas = useMemo(() => entries.reduce((sum, item) => sum + (item.amount ?? 0), 0), [entries]);
   const totalSaidas = useMemo(() => exits.reduce((sum, item) => sum + (item.amount ?? 0), 0), [exits]);
@@ -565,23 +593,30 @@ export const DashboardPage = () => {
                 Comparativo de entradas e saidas por categoria.
               </p>
             </div>
-            <div className="inline-flex overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-xs">
-              <button
-                type="button"
-                className={`px-3 py-1 font-semibold ${categoryView === "entradas" ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"}`}
-                onClick={() => setCategoryView("entradas")}
-              >
-                Entradas
-              </button>
-              <button
-                type="button"
-                className={`px-3 py-1 font-semibold ${categoryView === "saidas" ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"}`}
-                onClick={() => setCategoryView("saidas")}
-              >
-                Saidas
-              </button>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-xs">
+                <button
+                  type="button"
+                  className={`px-3 py-1 font-semibold ${categoryView === "entradas" ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"}`}
+                  onClick={() => setCategoryView("entradas")}
+                >
+                  Entradas
+                </button>
+                <button
+                  type="button"
+                  className={`px-3 py-1 font-semibold ${categoryView === "saidas" ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"}`}
+                  onClick={() => setCategoryView("saidas")}
+                >
+                  Saidas
+                </button>
+              </div>
+              {!hasCategoryData && (
+                <button type="button" onClick={handleAddDemo} className="rounded-full border border-[var(--color-border)] px-3 py-1 text-xs font-semibold text-[var(--color-text-primary)] hover:border-[var(--color-accent)]">
+                  Adicionar demo
+                </button>
+              )}
+              </div>
             </div>
-          </div>
           <div className="relative h-80 w-full overflow-hidden rounded-[28px] bg-[var(--color-surface-muted)]/20">
             <ResponsiveContainer>
               <PieChart>
