@@ -26,15 +26,29 @@ export const Topbar = () => {
     theme: state.theme,
     hiddenMenuSections: state.hiddenMenuSections,
   }));
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
   const currentThemeLabel = useMemo(() => themeLabels[theme] ?? "Aurora", [theme]);
   const navigationItems = useMemo(
     () => NAVIGATION_ITEMS.filter((item) => isSectionVisible(item.key, hiddenMenuSections)),
     [hiddenMenuSections],
   );
+
+  if (loading) {
+    return (
+      <header className="flex items-center justify-center min-h-[64px]">
+        <span className="text-[var(--color-text-muted)] text-sm">Carregando usuário...</span>
+      </header>
+    );
+  }
+  if (!user) {
+    return (
+      <header className="flex items-center justify-center min-h-[64px]">
+        <span className="text-[var(--color-text-muted)] text-sm">Usuário não autenticado.</span>
+      </header>
+    );
+  }
 
   const displayName =
     (user?.user_metadata?.full_name as string | undefined) ??
@@ -66,13 +80,25 @@ export const Topbar = () => {
         </div>
 
         <div className="flex items-center gap-3 sm:justify-end">
-          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-muted)] shadow-card transition hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:hidden">
+          <button
+            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-muted)] shadow-card transition hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:hidden"
+            aria-label="Abrir menu"
+            title="Abrir menu"
+          >
             <Menu className="h-5 w-5" />
           </button>
-          <button className="hidden h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-muted)] shadow-card transition hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:flex">
+          <button
+            className="hidden h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-muted)] shadow-card transition hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:flex"
+            aria-label="Abrir mensagens"
+            title="Abrir mensagens"
+          >
             <Mail className="h-5 w-5" />
           </button>
-          <button className="hidden h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-muted)] shadow-card transition hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:flex">
+          <button
+            className="hidden h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-muted)] shadow-card transition hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:flex"
+            aria-label="Abrir notificações"
+            title="Abrir notificações"
+          >
             <Bell className="h-5 w-5" />
           </button>
           <div className="flex w-full items-center gap-3 rounded-2xl bg-[var(--color-surface)] px-4 py-2.5 shadow-card sm:w-auto">
@@ -91,6 +117,8 @@ export const Topbar = () => {
               type="button"
               onClick={handleSignOut}
               className="ml-2 flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border)] text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              aria-label="Sair"
+              title="Sair"
             >
               <LogOut className="h-4 w-4" />
             </button>
@@ -114,6 +142,8 @@ export const Topbar = () => {
                   ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
                   : "border-transparent bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]",
               )}
+              aria-label={item.label}
+              title={item.label}
             >
               <Icon className="h-4 w-4" />
               {item.label}
@@ -124,3 +154,5 @@ export const Topbar = () => {
     </header>
   );
 };
+
+
