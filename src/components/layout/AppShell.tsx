@@ -3,6 +3,7 @@ import type { PropsWithChildren } from "react";
 
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+import { MobileNav } from "./MobileNav";
 import { LabeledErrorBoundary } from "../common/ErrorBoundary";
 
 export const AppShell = ({ children }: PropsWithChildren) => {
@@ -11,7 +12,7 @@ export const AppShell = ({ children }: PropsWithChildren) => {
       <LabeledErrorBoundary label="Sidebar">
         <Sidebar />
       </LabeledErrorBoundary>
-      <div className="flex flex-1 flex-col gap-6 px-4 pb-16 pt-4 sm:px-6 lg:px-8 lg:pb-8">
+      <div className="flex flex-1 flex-col gap-6 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:pb-8">
         <LabeledErrorBoundary label="Topbar">
           <Topbar />
         </LabeledErrorBoundary>
@@ -23,6 +24,7 @@ export const AppShell = ({ children }: PropsWithChildren) => {
           </div>
         </main>
       </div>
+      <MobileNav />
     </div>
   );
 };
