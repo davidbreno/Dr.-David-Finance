@@ -183,12 +183,12 @@
   --color-border: rgba(128, 139, 193, 0.22);
   --color-text-primary: #e9ecff;
   --color-text-muted: #8d96b8;
-  --color-accent: #f0bd4f;
+  --color-accent: #bef90c;
   --color-accent-soft: rgba(240, 189, 79, 0.2);
-  --color-accent-gradient: linear-gradient(135deg, #f0bd4f 0%, #f07f4f 100%);
+  --color-accent-gradient: linear-gradient(135deg, #b2f04f 0%, #f07f4f 100%);
   --logo-background: rgba(240, 189, 79, 0.28);
   --logo-gradient: linear-gradient(135deg, #f7d277 0%, #f07f4f 100%);
-  --color-profit: #f0bd4f;
+  --color-profit: #8cec0d;
   --color-profit-soft: rgba(240, 189, 79, 0.28);
   --color-loss: #ff6f5f;
   --color-loss-soft: rgba(255, 111, 95, 0.28);
