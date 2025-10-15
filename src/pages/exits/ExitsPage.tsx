@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   CartesianGrid,
   Cell,
@@ -29,14 +29,23 @@ export const ExitsPage = () => {
   const { data: exits = [], isLoading } = useTransactions("saida");
   const createExit = useCreateTransaction("saida");
   const deleteExit = useDeleteTransaction("saida");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredExits = useMemo(
+    () =>
+      selectedCategory
+        ? exits.filter((e) => (e.category ?? "Outros").toUpperCase() === selectedCategory)
+        : exits,
+    [exits, selectedCategory],
+  );
 
   const monthly = useMemo(
     () =>
       aggregateByMonth(
         [],
-        exits.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
+        filteredExits.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
       ),
-    [exits],
+    [filteredExits],
   );
 
   const categories = useMemo(
@@ -68,10 +77,10 @@ export const ExitsPage = () => {
 
   const sortedExits = useMemo(
     () =>
-      [...exits].sort(
+      [...filteredExits].sort(
         (a, b) => new Date(b.date ?? "").getTime() - new Date(a.date ?? "").getTime(),
       ),
-    [exits],
+    [filteredExits],
   );
 
   return (
@@ -182,12 +191,17 @@ export const ExitsPage = () => {
                     startAngle={90}
                     endAngle={-270}
                   >
-                    {saidasPorCategoria.map((_, idx) => (
+                    {saidasPorCategoria.map((slice, idx) => (
                       <Cell
                         key={`saida-${idx}`}
                         fill={donutColors[idx % donutColors.length]}
                         stroke="var(--color-bg)"
                         strokeWidth={5}
+                        onClick={() =>
+                          setSelectedCategory((prev) =>
+                            prev === slice.name.toUpperCase() ? null : slice.name.toUpperCase(),
+                          )
+                        }
                       />
                     ))}
                   </Pie>
@@ -197,6 +211,20 @@ export const ExitsPage = () => {
               <span className="text-sm text-[rgba(255,255,255,0.55)]">Sem dados suficientes.</span>
             )}
           </div>
+          {selectedCategory && (
+            <div className="flex items-center justify-between rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2 text-xs text-[var(--color-text-muted)]">
+              <span>
+                Filtro por categoria: <strong className="text-[var(--color-text-primary)]">{selectedCategory}</strong>
+              </span>
+              <button
+                type="button"
+                className="btn-ghost rounded-xl px-3 py-1 text-xs"
+                onClick={() => setSelectedCategory(null)}
+              >
+                Limpar
+              </button>
+            </div>
+          )}
         </div>
 
         <TransactionForm
