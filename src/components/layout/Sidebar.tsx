@@ -20,7 +20,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={clsx(
-        "group/sidebar relative flex h-screen flex-col gap-6 overflow-hidden border-r border-[var(--color-border)] bg-[var(--color-surface)] shadow-card transition-all duration-400 ease-in-out",
+        "group/sidebar relative hidden h-screen flex-col gap-6 overflow-hidden border-r border-[var(--color-border)] bg-[var(--color-surface)] shadow-card transition-all duration-400 ease-in-out lg:flex",
         isHoverVariant ? "w-[64px] hover:w-[268px]" : "w-[268px]",
         isHoverVariant ? "px-2 py-4" : "px-5 py-6",
       )}
