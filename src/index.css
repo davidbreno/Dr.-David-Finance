@@ -106,6 +106,10 @@ body {
     background-image: var(--color-accent-gradient);
   }
 
+  .accent-text {
+    color: var(--color-accent);
+  }
+
   .muted {
     color: var(--color-text-muted);
   }
@@ -233,18 +237,18 @@ body {
   --color-bg: #000000;
   --color-surface: #0b0b0b;
   --color-surface-muted: #0a0a0a;
-  --color-border: rgba(255, 40, 40, 0.22);
+  --color-border: rgba(255, 40, 40, 0.42);
   --color-text-primary: #f2f2f2;
   --color-text-muted: #9a9a9a;
-  --color-accent: #ff1f2d;
-  --color-accent-soft: rgba(255, 31, 45, 0.2);
+  --color-accent: #ff1a1a; /* vermelho vibrante */
+  --color-accent-soft: rgba(255, 26, 26, 0.22);
   --color-accent-gradient: linear-gradient(135deg, #ff1a1a 0%, #c01212 50%, #7a0000 100%);
   --logo-background: #000000;
   --logo-gradient: linear-gradient(135deg, #ff1a1a 0%, #c01212 60%, #7a0000 100%);
   --logo-size: 30px; /* mais fina/menor conforme pedido */
   --color-profit: #3fdd8c;
-  --color-profit-soft: rgba(63, 221, 140, 0.24);
-  --color-loss: #ff4d4d;
+  --color-profit-soft: rgba(63, 221, 140, 0.28);
+  --color-loss: #ff4d4d; /* vermelho claro para perdas */
   --color-loss-soft: rgba(255, 77, 77, 0.28);
 }
 

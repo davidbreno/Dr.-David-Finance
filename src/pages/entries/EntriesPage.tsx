@@ -21,14 +21,20 @@ import {
   useDeleteTransaction,
 } from "../../hooks/useTransactions";
 import { aggregateByMonth, aggregateCategories } from "../../utils/analytics";
+import { useUIStore } from "../../store/ui";
 import { formatCurrency, formatDate } from "../../utils/format";
 
-const donutColors = ["#7367ff", "#ff8a3d", "#20d68f", "#4dd4ff", "#ea5bff", "#ffcf33"];
+const defaultDonut = ["#7367ff", "#ff8a3d", "#20d68f", "#4dd4ff", "#ea5bff", "#ffcf33"];
 
 export const EntriesPage = () => {
+  const theme = useUIStore((s) => s.theme);
   const { data: entries = [], isLoading } = useTransactions("entrada");
   const createEntry = useCreateTransaction("entrada");
   const deleteEntry = useDeleteTransaction("entrada");
+
+  const chartPrimary = theme === "crimson" ? "#ff1a1a" : "#7367ff";
+  const chartSecondary = theme === "crimson" ? "#ff8a3d" : "#ff8a3d";
+  const donutColors = theme === "crimson" ? ["#8b0000", "#ff2a2a", "#ff8a3d"] : defaultDonut;
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -96,10 +102,10 @@ export const EntriesPage = () => {
       <section className="glass-card flex flex-col gap-6 p-6" data-glow="purple">
         <header className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+            <h2 className="text-lg font-semibold accent-text">
               Fluxo financeiro
             </h2>
-            <p className="text-sm text-[var(--color-text-muted)]">
+            <p className="text-sm accent-text">
               Entradas e saídas em cada mês.
             </p>
           </div>
@@ -109,12 +115,12 @@ export const EntriesPage = () => {
             <LineChart data={monthly} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="lineEntrada" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#7367ff" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="#7367ff" stopOpacity={0.2} />
+                  <stop offset="0%" stopColor={chartPrimary} stopOpacity={0.9} />
+                  <stop offset="100%" stopColor={chartPrimary} stopOpacity={0.2} />
                 </linearGradient>
                 <linearGradient id="lineSaida" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ff8a3d" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="#ff8a3d" stopOpacity={0.2} />
+                  <stop offset="0%" stopColor={chartSecondary} stopOpacity={0.9} />
+                  <stop offset="100%" stopColor={chartSecondary} stopOpacity={0.2} />
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
@@ -150,7 +156,7 @@ export const EntriesPage = () => {
                 stroke="url(#lineEntrada)"
                 strokeWidth={3}
                 dot={false}
-                activeDot={{ r: 6, fill: "#7367ff" }}
+                activeDot={{ r: 6, fill: "${chartPrimary}" }}
               />
               <Line
                 type="monotone"
@@ -158,7 +164,7 @@ export const EntriesPage = () => {
                 stroke="url(#lineSaida)"
                 strokeWidth={3}
                 dot={false}
-                activeDot={{ r: 6, fill: "#ff8a3d" }}
+                activeDot={{ r: 6, fill: "${chartSecondary}" }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -168,14 +174,14 @@ export const EntriesPage = () => {
       <section className="grid gap-6 lg:grid-cols-[1.8fr,1fr]">
         <div className="glass-card flex flex-col gap-6 p-6" data-glow="orange">
           <header className="flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(115,103,255,0.18)] text-[#7367ff]">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(115,103,255,0.18)] text-[${chartPrimary}]">
               <TrendingUp className="h-6 w-6" />
             </span>
             <div>
-              <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+              <h2 className="text-lg font-semibold accent-text">
                 Entradas por categoria
               </h2>
-              <p className="text-sm text-[var(--color-text-muted)]">
+              <p className="text-sm accent-text">
                 Visualize onde suas receitas se concentram.
               </p>
             </div>
@@ -241,10 +247,10 @@ export const EntriesPage = () => {
       <section className="glass-card flex flex-col gap-4 p-6" data-glow="none">
         <header className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+            <h2 className="text-lg font-semibold accent-text">
               Histórico de entradas
             </h2>
-            <p className="text-sm text-[var(--color-text-muted)]">
+            <p className="text-sm accent-text">
               Gerencie e acompanhe as receitas registradas.
             </p>
           </div>
@@ -310,3 +316,6 @@ export const EntriesPage = () => {
 };
 
 export default EntriesPage;
+
+
+

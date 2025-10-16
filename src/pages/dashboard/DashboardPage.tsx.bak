@@ -15,7 +15,6 @@ import {
 import { useTransactions } from "../../hooks/useTransactions";
 import { useAccounts } from "../../hooks/useAccounts";
 import { useAuth } from "../../providers/AuthProvider";
-import { useUIStore } from "../../store/ui";
 import { formatCurrency } from "../../utils/format";
 import { aggregateByMonth, aggregateCategories } from "../../utils/analytics";
 
@@ -56,7 +55,7 @@ const SummaryCard = ({
   glow?: "orange" | "green" | "none";
 }) => (
   <div className="glass-card flex flex-col gap-3 p-5" data-glow={glow ?? "none"}>
-    <p className="text-sm font-medium uppercase tracking-wide accent-text">{title}</p>
+    <p className="text-sm font-medium text-[rgba(255,255,255,0.6)] uppercase tracking-wide">{title}</p>
     <strong className="text-2xl font-semibold text-[var(--color-text-primary)]">
       {formatCurrency(value)}
     </strong>
@@ -75,9 +74,7 @@ const SummaryCard = ({
 );
 
 export const DashboardPage = () => {
-  const theme = useUIStore.getState().theme;
   const { user } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const firstName = useMemo(
     () => (user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "Usuário",
     [user],
@@ -91,29 +88,13 @@ export const DashboardPage = () => {
     setMounted(true);
   }, []);
 
-  const filteredEntries = useMemo(
-    () =>
-      selectedCategory
-        ? entries.filter((e) => (e.category ?? "Outros").toUpperCase() === selectedCategory)
-        : entries,
-    [entries, selectedCategory],
-  );
-
-  const filteredExits = useMemo(
-    () =>
-      selectedCategory
-        ? exits.filter((e) => (e.category ?? "Outros").toUpperCase() === selectedCategory)
-        : exits,
-    [exits, selectedCategory],
-  );
-
   const monthly = useMemo(
     () =>
       aggregateByMonth(
-        filteredEntries.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
-        filteredExits.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
+        entries.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
+        exits.map((item) => ({ amount: item.amount ?? 0, date: item.date })),
       ),
-    [filteredEntries, filteredExits],
+    [entries, exits],
   );
 
   const categories = useMemo(
@@ -142,13 +123,13 @@ export const DashboardPage = () => {
   );
 
   const totalEntradas = useMemo(
-    () => filteredEntries.reduce((sum, item) => sum + (item.amount ?? 0), 0),
-    [filteredEntries],
+    () => entries.reduce((sum, item) => sum + (item.amount ?? 0), 0),
+    [entries],
   );
 
   const totalSaidas = useMemo(
-    () => filteredExits.reduce((sum, item) => sum + (item.amount ?? 0), 0),
-    [filteredExits],
+    () => exits.reduce((sum, item) => sum + (item.amount ?? 0), 0),
+    [exits],
   );
 
   const saldoAtual = totalEntradas - totalSaidas;
@@ -209,14 +190,11 @@ export const DashboardPage = () => {
   const hasEntradaCategories = entradasPorCategoria.length > 0;
   const hasSaidaCategories = saidasPorCategoria.length > 0;
 
-  // paleta de donut condicional ao tema (Crimson = vermelhos + laranja)
-  const donutPalette = theme === "crimson" ? ["#8b0000", "#ff2a2a", "#ff8a3d"] : donutColors;
-
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold text-[var(--color-text-primary)]">Olá, {firstName}.</h1>
-        <p className="text-sm accent-text">Bem-vindo ao seu painel financeiro.</p>
+        <p className="text-sm text-[rgba(255,255,255,0.55)]">Bem-vindo ao seu painel financeiro.</p>
       </div>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -229,7 +207,7 @@ export const DashboardPage = () => {
         <div className="glass-card flex flex-col gap-5 p-6" data-glow="purple">
           <header className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--color-text-primary)]"><span className="accent-text">Fluxo financeiro</span></h2>
+              <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Fluxo financeiro</h2>
               <p className="text-sm text-[var(--color-text-muted)]">Entradas e saídas nos últimos meses.</p>
             </div>
           </header>
@@ -238,12 +216,12 @@ export const DashboardPage = () => {
               <LineChart data={monthly} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="lineEntrada" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={theme==="crimson"?"#ff1a1a":"#7367ff"} stopOpacity={0.95} />
-                    <stop offset="100%" stopColor={theme==="crimson"?"#ff1a1a":"#7367ff"} stopOpacity={0.2} />
+                    <stop offset="0%" stopColor="#7367ff" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#7367ff" stopOpacity={0.2} />
                   </linearGradient>
                   <linearGradient id="lineSaida" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={theme==="crimson"?"#ff8a3d":"#ff8a3d"} stopOpacity={0.95} />
-                    <stop offset="100%" stopColor={theme==="crimson"?"#ff8a3d":"#ff8a3d"} stopOpacity={0.2} />
+                    <stop offset="0%" stopColor="#ff8a3d" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#ff8a3d" stopOpacity={0.2} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
@@ -264,14 +242,6 @@ export const DashboardPage = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          {selectedCategory && (
-            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2 text-xs text-[var(--color-text-muted)]">
-              Filtrando por categoria: <strong className="text-[var(--color-text-primary)]">{selectedCategory}</strong>
-              <button className="ml-3 btn-ghost rounded-xl px-3 py-1 text-xs" onClick={() => setSelectedCategory(null)}>
-                Limpar
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-col gap-6">
@@ -297,18 +267,8 @@ export const DashboardPage = () => {
                       startAngle={90}
                       endAngle={-270}
                     >
-                      {entradasPorCategoria.map((slice, idx) => (
-                        <Cell
-                          key={`entrada-${idx}`}
-                          fill={donutPalette[idx % donutPalette.length]}
-                          stroke="var(--color-bg)"
-                          strokeWidth={5}
-                          onClick={() =>
-                            setSelectedCategory((prev) =>
-                              prev === slice.name.toUpperCase() ? null : slice.name.toUpperCase(),
-                            )
-                          }
-                        />
+                      {entradasPorCategoria.map((_, idx) => (
+                        <Cell key={`entrada-${idx}`} fill={donutColors[idx % donutColors.length]} stroke="var(--color-bg)" strokeWidth={5} />
                       ))}
                     </Pie>
                   </PieChart>
@@ -341,18 +301,8 @@ export const DashboardPage = () => {
                       startAngle={90}
                       endAngle={-270}
                     >
-                      {saidasPorCategoria.map((slice, idx) => (
-                        <Cell
-                          key={`saida-${idx}`}
-                          fill={donutPalette[idx % donutPalette.length]}
-                          stroke="var(--color-bg)"
-                          strokeWidth={5}
-                          onClick={() =>
-                            setSelectedCategory((prev) =>
-                              prev === slice.name.toUpperCase() ? null : slice.name.toUpperCase(),
-                            )
-                          }
-                        />
+                      {saidasPorCategoria.map((_, idx) => (
+                        <Cell key={`saida-${idx}`} fill={donutColors[idx % donutColors.length]} stroke="var(--color-bg)" strokeWidth={5} />
                       ))}
                     </Pie>
                   </PieChart>
@@ -401,7 +351,7 @@ export const DashboardPage = () => {
                       <td>
                         <span
                           className="status-badge"
-                          data-variant={account.status === "pago" ? "paid" : account.status === "em_atraso" ? "late" : "pending"}
+                          data-variant={account.status === "pago" ? "paid" : account.status === "atrasado" ? "late" : "pending"}
                         >
                           {account.status}
                         </span>
@@ -444,7 +394,4 @@ export const DashboardPage = () => {
 };
 
 export default DashboardPage;
-
-
-
 
