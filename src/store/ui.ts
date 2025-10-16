@@ -36,7 +36,7 @@ const ALL_SECTIONS: MenuSection[] = [
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
-      theme: "neon",
+      theme: "crimson",
       sidebarVariant: "hover",
       hiddenMenuSections: [],
       setTheme: (theme) => set({ theme }),
