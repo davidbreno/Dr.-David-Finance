@@ -90,6 +90,10 @@ body {
     font-weight: 600;
     color: var(--color-text-primary);
   }
+  .hero-title {
+    font-family: "Playfair Display", Georgia, serif;
+    letter-spacing: 0.2px;
+  }
 }
 
 @layer components {
