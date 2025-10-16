@@ -12,6 +12,7 @@ import { isSectionVisible } from "../../store/ui";
 const themeLabels: Record<string, string> = {
   neon: "Neon",
   obsidian: "Obsidian Gold",
+  crimson: "Crimson",
 };
 
 export const Topbar = () => {

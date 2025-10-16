@@ -8,6 +8,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --logo-size: 36px;
   --color-bg: #f4f5fb;
   --color-surface: #ffffff;
   --color-surface-muted: #f8f9ff;
@@ -110,8 +111,8 @@ body {
   }
 
   .logo-mark {
-    width: 36px;
-    height: 36px;
+    width: var(--logo-size);
+    height: var(--logo-size);
     background: var(--logo-gradient);
     mask: url("/logo-mark.svg") center/contain no-repeat;
     -webkit-mask: url("/logo-mark.svg") center/contain no-repeat;
@@ -224,5 +225,26 @@ body {
   .table-neon td {
     @apply py-3;
   }
+}
+
+/* Crimson theme: fundo preto e acentos vermelhos */
+[data-theme="crimson"] {
+  color-scheme: dark;
+  --color-bg: #000000;
+  --color-surface: #0b0b0b;
+  --color-surface-muted: #0a0a0a;
+  --color-border: rgba(255, 40, 40, 0.22);
+  --color-text-primary: #f2f2f2;
+  --color-text-muted: #9a9a9a;
+  --color-accent: #ff1f2d;
+  --color-accent-soft: rgba(255, 31, 45, 0.2);
+  --color-accent-gradient: linear-gradient(135deg, #ff1a1a 0%, #c01212 50%, #7a0000 100%);
+  --logo-background: #000000;
+  --logo-gradient: linear-gradient(135deg, #ff1a1a 0%, #c01212 60%, #7a0000 100%);
+  --logo-size: 30px; /* mais fina/menor conforme pedido */
+  --color-profit: #3fdd8c;
+  --color-profit-soft: rgba(63, 221, 140, 0.24);
+  --color-loss: #ff4d4d;
+  --color-loss-soft: rgba(255, 77, 77, 0.28);
 }
 

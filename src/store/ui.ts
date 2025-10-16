@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type ThemeOption = "neon" | "obsidian";
+export type ThemeOption = "neon" | "obsidian" | "crimson";
 export type SidebarVariant = "pinned" | "hover";
 
 export type MenuSection =

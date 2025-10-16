@@ -17,6 +17,11 @@ const themes: { key: ThemeOption; name: string; description: string }[] = [
     name: "Obsidian Gold",
     description: "Dark elegante com detalhes dourados e contrastes sofisticados.",
   },
+  {
+    key: "crimson",
+    name: "Crimson",
+    description: "Fundo preto com acentos vermelhos e logo fina.",
+  },
 ];
 
 const sidebarVariants: { key: SidebarVariant; title: string; description: string }[] = [
